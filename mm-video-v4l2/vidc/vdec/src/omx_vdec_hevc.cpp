@@ -133,6 +133,9 @@ char ouputextradatafilename [] = "/data/extradata";
 #define EXTRADATA_IDX(__num_planes) (__num_planes  - 1)
 
 #define DEFAULT_EXTRADATA (OMX_INTERLACE_EXTRADATA)
+
+int debug_level = PRIO_ERROR;
+
 void* async_message_thread (void *input)
 {
   OMX_BUFFERHEADERTYPE *buffer;
@@ -576,29 +579,31 @@ omx_vdec::omx_vdec(): m_error_propogated(false),
   /* Assumption is that , to begin with , we have all the frames with decoder */
   DEBUG_PRINT_HIGH("In OMX vdec Constructor");
 #ifdef _ANDROID_
-  char property_value[PROPERTY_VALUE_MAX] = {0};
-  property_get("vidc.dec.debug.perf", property_value, "0");
-  perf_flag = atoi(property_value);
-  if (perf_flag)
-  {
-    DEBUG_PRINT_HIGH("vidc.dec.debug.perf is %d", perf_flag);
-    dec_time.start();
-    proc_frms = latency = 0;
-  }
-  property_value[0] = '\0';
-  property_get("vidc.dec.debug.ts", property_value, "0");
-  m_debug_timestamp = atoi(property_value);
-  DEBUG_PRINT_HIGH("vidc.dec.debug.ts value is %d",m_debug_timestamp);
-  if (m_debug_timestamp)
-  {
-    time_stamp_dts.set_timestamp_reorder_mode(true);
-    time_stamp_dts.enable_debug_print(true);
-  }
+    char property_value[PROPERTY_VALUE_MAX] = {0};
+    property_get("vidc.debug.level", property_value, "0");
+    debug_level = atoi(property_value);
+    property_value[0] = '\0';
 
-  property_value[0] = '\0';
-  property_get("vidc.dec.debug.concealedmb", property_value, "0");
-  m_debug_concealedmb = atoi(property_value);
-  DEBUG_PRINT_HIGH("vidc.dec.debug.concealedmb value is %d",m_debug_concealedmb);
+    property_get("vidc.dec.debug.perf", property_value, "0");
+    perf_flag = atoi(property_value);
+    if (perf_flag) {
+        DEBUG_PRINT_HIGH("vidc.dec.debug.perf is %d", perf_flag);
+        dec_time.start();
+        proc_frms = latency = 0;
+    }
+    property_value[0] = '\0';
+    property_get("vidc.dec.debug.ts", property_value, "0");
+    m_debug_timestamp = atoi(property_value);
+    DEBUG_PRINT_HIGH("vidc.dec.debug.ts value is %d",m_debug_timestamp);
+    if (m_debug_timestamp) {
+        time_stamp_dts.set_timestamp_reorder_mode(true);
+        time_stamp_dts.enable_debug_print(true);
+    }
+
+    property_value[0] = '\0';
+    property_get("vidc.dec.debug.concealedmb", property_value, "0");
+    m_debug_concealedmb = atoi(property_value);
+    DEBUG_PRINT_HIGH("vidc.dec.debug.concealedmb value is %d",m_debug_concealedmb);
 
 #endif
   memset(&m_cmp,0,sizeof(m_cmp));
