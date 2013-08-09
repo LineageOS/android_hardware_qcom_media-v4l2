@@ -7235,8 +7235,12 @@ int omx_vdec::async_message_process (void *context, void* message)
        !(v4l2_buf_ptr->flags & V4L2_QCOM_BUF_FLAG_DECODEONLY) &&
        !(v4l2_buf_ptr->flags & V4L2_BUF_FLAG_EOS))
   {
-      omx->post_event ((unsigned)NULL,(unsigned int)omxhdr,
-        OMX_COMPONENT_GENERATE_FTB);
+    omx->time_stamp_dts.remove_time_stamp(
+      omxhdr->nTimeStamp,
+      (omx->drv_ctx.interlace != VDEC_InterlaceFrameProgressive)
+      ?true:false);
+    omx->post_event ((unsigned)NULL,(unsigned int)omxhdr,
+      OMX_COMPONENT_GENERATE_FTB);
       break;
   }
   if (v4l2_buf_ptr->flags & V4L2_QCOM_BUF_DATA_CORRUPT)
