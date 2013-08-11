@@ -176,6 +176,7 @@ venc_dev::venc_dev(class omx_venc *venc_class)
 	for (i = 0; i < MAX_PORT; i++)
 		streaming[i] = false;
 
+        stopped = 1;
 	paused = false;
 	async_thread_created = false;
 	color_format = 0;
@@ -1504,6 +1505,7 @@ unsigned venc_dev::venc_start(void)
 	  return 1;
 
   streaming[CAPTURE_PORT] = true;
+  stopped = 0;
   return 0;
 }
 
