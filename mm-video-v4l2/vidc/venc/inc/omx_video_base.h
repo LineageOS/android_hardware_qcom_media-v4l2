@@ -229,6 +229,8 @@ public:
 #ifdef _ANDROID_ICS_
   void omx_release_meta_buffer(OMX_BUFFERHEADERTYPE *buffer);
 #endif
+  virtual bool dev_color_align(OMX_BUFFERHEADERTYPE *buffer, OMX_U32 width,
+                  OMX_U32 height) = 0;
   OMX_ERRORTYPE component_role_enum(
                                    OMX_HANDLETYPE hComp,
                                    OMX_U8 *role,
