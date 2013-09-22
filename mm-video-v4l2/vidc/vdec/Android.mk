@@ -72,10 +72,6 @@ ifeq ($(TARGET_USES_ION),true)
 libOmxVdec-def += -DUSE_ION
 endif
 
-ifneq ($(call is-platform-sdk-version-at-least,18),true)
-libOmxVdec-def += -DANDROID_JELLYBEAN_MR1=1
-endif
-
 vdec-inc          = $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
 
 # ---------------------------------------------------------------------------------
@@ -85,21 +81,27 @@ vdec-inc          = $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
 include $(CLEAR_VARS)
 LOCAL_PATH:= $(ROOT_DIR)
 
+ifneq ($(TARGET_QCOM_DISPLAY_VARIANT),)
+DISPLAY := display-$(TARGET_QCOM_DISPLAY_VARIANT)
+else
+DISPLAY := display
+endif
+
 libmm-vdec-inc          := bionic/libc/include
 libmm-vdec-inc          += bionic/libstdc++/include
 libmm-vdec-inc          += $(LOCAL_PATH)/inc 
 libmm-vdec-inc          += $(OMX_VIDEO_PATH)/vidc/common/inc
-libmm-vdec-inc          += hardware/qcom/media/mm-core/inc
+libmm-vdec-inc          += hardware/qcom/media-v4l2/mm-core/inc
 #DRM include - Interface which loads the DRM library
 libmm-vdec-inc	        += $(OMX_VIDEO_PATH)/DivxDrmDecrypt/inc
-libmm-vdec-inc          += hardware/qcom/display/libgralloc
-libmm-vdec-inc          += hardware/qcom/display/libgenlock
+libmm-vdec-inc          += hardware/qcom/$(DISPLAY)/libgralloc
+libmm-vdec-inc          += hardware/qcom/$(DISPLAY)/libgenlock
 libmm-vdec-inc          += frameworks/native/include/media/openmax
 libmm-vdec-inc          += frameworks/native/include/media/hardware
 libmm-vdec-inc          += $(vdec-inc)
-libmm-vdec-inc          += hardware/qcom/display/libqdutils
-libmm-vdec-inc      += hardware/qcom/media/libc2dcolorconvert
-libmm-vdec-inc      += hardware/qcom/display/libcopybit
+libmm-vdec-inc          += hardware/qcom/$(DISPLAY)/libqdutils
+libmm-vdec-inc      += hardware/qcom/media-v4l2/libc2dcolorconvert
+libmm-vdec-inc      += hardware/qcom/$(DISPLAY)/libcopybit
 libmm-vdec-inc      += frameworks/av/include/media/stagefright
 
 
@@ -123,7 +125,7 @@ ifeq ($(call is-board-platform-in-list,msm8974 msm8610 msm8226 apq8084),true)
 LOCAL_SRC_FILES         += src/omx_vdec_msm8974.cpp
 else
 LOCAL_SHARED_LIBRARIES  += libhardware
-libmm-vdec-inc          += hardware/qcom/display/libhwcomposer
+libmm-vdec-inc          += hardware/qcom/$(DISPLAY)/libhwcomposer
 LOCAL_SRC_FILES         += src/power_module.cpp
 LOCAL_SRC_FILES         += src/omx_vdec.cpp
 endif
@@ -177,7 +179,7 @@ endif
 # ---------------------------------------------------------------------------------
 include $(CLEAR_VARS)
 
-mm-vdec-test-inc    := hardware/qcom/media/mm-core/inc
+mm-vdec-test-inc    := hardware/qcom/media-v4l2/mm-core/inc
 mm-vdec-test-inc    += $(LOCAL_PATH)/inc
 mm-vdec-test-inc    += $(vdec-inc)
 
@@ -200,7 +202,7 @@ include $(BUILD_EXECUTABLE)
 # ---------------------------------------------------------------------------------
 include $(CLEAR_VARS)
 
-mm-vdec-drv-test-inc    := hardware/qcom/media/mm-core/inc
+mm-vdec-drv-test-inc    := hardware/qcom/media-v4l2/mm-core/inc
 mm-vdec-drv-test-inc    += $(LOCAL_PATH)/inc
 mm-vdec-drv-test-inc    += $(vdec-inc)
 
