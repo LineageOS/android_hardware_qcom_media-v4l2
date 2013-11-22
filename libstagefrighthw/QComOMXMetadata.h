@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 #include <system/window.h>
+#include <media/hardware/MetadataBufferType.h>
 
 namespace android {
 
-    typedef enum {
+    /*typedef enum {
         kMetadataBufferTypeCameraSource  = 0,
         kMetadataBufferTypeGrallocSource = 1,
     } MetadataBufferType;
+    */
 
     typedef struct encoder_media_buffer_type {
         MetadataBufferType buffer_type;
